@@ -42,7 +42,7 @@ namespace DequeProject
 			}
 		}
 
-		public int Size { get { return size; } }
+		public int Size => size;
 
 		public T this[int index]
 		{
@@ -60,26 +60,26 @@ namespace DequeProject
 		public void PushFront(T item)
 		{
 			DequeItem<T> newItem = new DequeItem<T>(item);
-			DequeItem<T> prevHeadItem = head;
-			newItem.Next = prevHeadItem;
+			DequeItem<T> prevHead = head;
+			newItem.Next = prevHead;
 			head = newItem;
 			if (size == 0)
 				tail = head;
 			else
-				prevHeadItem.Prev = newItem;
+				prevHead.Prev = newItem;
 			size++;
 		}
 
 		public void PushBack(T item)
 		{
 			DequeItem<T> newItem = new DequeItem<T>(item);
-			DequeItem<T> prevTailItem = tail;
-			newItem.Prev = prevTailItem;
+			DequeItem<T> prevTail = tail;
+			newItem.Prev = prevTail;
 			tail = newItem;
 			if (size == 0)
 				head = tail;
 			else
-				prevTailItem.Next = newItem;
+				prevTail.Next = newItem;
 			size++;
 		}
 
@@ -123,17 +123,23 @@ namespace DequeProject
 
 		public T Find(Predicate<T> match)
 		{
-			DequeItem<T> currentItem = head;
-			while (currentItem != null)
+			foreach (var item in this)
 			{
-				if (match(currentItem.Item))
-					break;
-				currentItem = currentItem.Next;
+				if (match(item))
+					return item;
 			}
-			if (currentItem == null)
-				return default;
-			else
-				return currentItem.Item;
+			return default;
+			//DequeItem<T> currentItem = head;
+			//while (currentItem != null)
+			//{
+			//	if (match(currentItem.Item))
+			//		break;
+			//	currentItem = currentItem.Next;
+			//}
+			//if (currentItem == null)
+			//	return default;
+			//else
+			//	return currentItem.Item;
 		}
 
 		public IEnumerator<T> GetEnumerator()
