@@ -4,26 +4,25 @@ using System.Collections.Generic;
 
 namespace DequeProject
 {
-	class ArrayDeque<T> : IEnumerable<T>
+	class ArrayDeque<T> : IEnumerable<T>, IDeque<T>
 	{
 		private T[] array;
 		private int head;
 		private int tail;
 		private int size;
 
-		public int Tail => tail;
-		public int Head => head;
+		public T Tail => array[tail];
+		public T Head => array[head];
 
 		public int Size => size;
+		public int RealSize => array.Length;
 
-		public T this[int index]
+		public ArrayDeque(ArrayDeque<T> deque)
 		{
-			get
-			{
-				if (index > size - 1 || index < 0)
-					throw new Exception("Index out of range");
-				return array[head + index];
-			}
+			array = deque.array;
+			head = deque.head;
+			tail = deque.tail;
+			size = deque.size;
 		}
 
 		public ArrayDeque()
@@ -34,6 +33,8 @@ namespace DequeProject
 
 		public void PushBack(T item)
 		{
+			if (item == null)
+				return;
 			if (size == 0)
 				array[tail] = item;
 			else
@@ -55,6 +56,8 @@ namespace DequeProject
 
 		public void PushFront(T item)
 		{
+			if (item == null)
+				return;
 			if (size == 0)
 				array[head] = item;
 			else
@@ -106,14 +109,21 @@ namespace DequeProject
 			array = newArray;
 		}
 
-		public T Find(Predicate<T> match)
+		public void Clear()
+		{
+			array = new T[9];
+			head = tail = array.Length / 2;
+			size = 0;
+		}
+
+		public bool Contains(Predicate<T> match)
 		{
 			foreach (var item in this)
 			{
 				if (match(item))
-					return item;
+					return true;
 			}
-			return default;
+			return false;
 		}
 
 		public IEnumerator<T> GetEnumerator()
@@ -125,6 +135,14 @@ namespace DequeProject
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return ((IEnumerable)this).GetEnumerator();
+		}
+
+		public bool Empty()
+		{
+			if (size == 0)
+				return true;
+			else
+				return false;
 		}
 	}
 }

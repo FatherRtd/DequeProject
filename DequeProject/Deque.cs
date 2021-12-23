@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics.Contracts;
 
 namespace DequeProject
 {
@@ -16,7 +16,7 @@ namespace DequeProject
 		}
 	}
 
-	class Deque<T> : IEnumerable<T>
+	class Deque<T> : IEnumerable<T>, IDeque<T>
 	{
 		private DequeItem<T> head;
 		private DequeItem<T> tail;
@@ -44,17 +44,12 @@ namespace DequeProject
 
 		public int Size => size;
 
-		public T this[int index]
+		public Deque(){}
+		public Deque(Deque<T> deque)
 		{
-			get
-			{
-				if (index > size-1 || index < 0)
-					throw new Exception("Index out of range");
-				DequeItem<T> currentItem = head;
-				for (int i = 0; i < index; i++)
-					currentItem = currentItem.Next;
-				return currentItem.Item;
-			}
+			head = deque.head;
+			tail = deque.tail;
+			size = deque.size;
 		}
 
 		public void PushFront(T item)
@@ -72,6 +67,8 @@ namespace DequeProject
 
 		public void PushBack(T item)
 		{
+			if(item == null)
+				return;
 			DequeItem<T> newItem = new DequeItem<T>(item);
 			DequeItem<T> prevTail = tail;
 			newItem.Prev = prevTail;
@@ -121,25 +118,14 @@ namespace DequeProject
 			size = 0;
 		}
 
-		public T Find(Predicate<T> match)
+		public bool Contains(Predicate<T> match)
 		{
 			foreach (var item in this)
 			{
 				if (match(item))
-					return item;
+					return true;
 			}
-			return default;
-			//DequeItem<T> currentItem = head;
-			//while (currentItem != null)
-			//{
-			//	if (match(currentItem.Item))
-			//		break;
-			//	currentItem = currentItem.Next;
-			//}
-			//if (currentItem == null)
-			//	return default;
-			//else
-			//	return currentItem.Item;
+			return false;
 		}
 
 		public IEnumerator<T> GetEnumerator()
@@ -155,6 +141,14 @@ namespace DequeProject
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return ((IEnumerable)this).GetEnumerator();
+		}
+
+		public bool Empty()
+		{
+			if (size == 0)
+				return true;
+			else
+				return false;
 		}
 	}
 }
